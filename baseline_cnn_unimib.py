@@ -32,11 +32,9 @@ pathlist = ['./oppotunity_sum/unimib/training_data.npy',
             './oppotunity_sum/unimib/testing_labels.npy']
 
 
-# this is UCIdataset. torch.Size([7352,128, 9]) torch.Size([7352]) windows size:128 channel:9 calss:6 overlap:50%
+# this is UCIdataset. torch.Size([7734, 151, 3]) torch.Size([7734]) windows size:151 channel:3 calss:17 
 
-a=np.load(pathlist[0])
-b=np.load(pathlist[1])
-print(a.shape,b.shape)
+
 
 # # @torchsnooper.snoop()
 def data_flat(data_y):
@@ -70,21 +68,6 @@ def load_data(train_x_path, train_y_path, batchsize):
     #     pass
     return loader
 
-def similarity_matrix(x):
-    ''' Calculate adjusted cosine similarity matrix of size x.size(0) x x.size(0). '''
-    if x.dim() == 4:
-        if x.size(1) > 3 and x.size(2) > 1:
-            z = x.view(x.size(0), x.size(1), -1)
-            x = z.std(dim=2)
-            # print('this similarity matrix x shape',x.shape)
-        else:
-            x = x.view(x.size(0), -1)
-    xc = x - x.mean(dim=1).unsqueeze(1)
-    xn = xc / (1e-8 + torch.sqrt(torch.sum(xc ** 2, dim=1))).unsqueeze(1)
-    R = xn.matmul(xn.transpose(1, 0)).clamp(-1, 1)
-    # print('this similarity matrix x shape\n', R.shape)
-    return R
-
 def quzheng_x(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -92,6 +75,7 @@ def quzheng_x(height,kernel_size,padding,stride,numlayer):
         height=feature
         list.append(feature)
     return list
+
 def quzheng_s(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -100,14 +84,6 @@ def quzheng_s(height,kernel_size,padding,stride,numlayer):
         list.append(feature)
     return list
 
-class Loss(nn.Module):
-    def __init__(self):
-        super(Loss, self).__init__()
-        print('this is loss function!')
-
-    def forward(self, output, label):
-        loss_func = F.cross_entropy(output, label)
-        return loss_func
 class cnn(nn.Module):
     def __init__(self):
         super(cnn, self).__init__()
@@ -121,8 +97,6 @@ class cnn(nn.Module):
             # nn.MaxPool2d((4, 1), stride=(1, 1),padding=(1,0)),
 )
 
-
-
         self.encoder2 = nn.Sequential(
             nn.Conv2d(128, 256, kernel_size=(6,1),stride=(3,1),padding=(1,0)),
             nn.BatchNorm2d(256),
@@ -131,16 +105,12 @@ class cnn(nn.Module):
 )
 
 
-
-
         self.encoder3 = nn.Sequential(
             nn.Conv2d(256, 384, kernel_size=(6,2),stride=(2,1),padding=(1,0)),
             nn.BatchNorm2d(384),
             nn.ReLU(inplace=True),
             # nn.MaxPool2d((4, 1), stride=(1, 1),padding=(1,0))
 )
-
-
 
         self.linear = nn.Linear(8448, 17)
         # self.soft=nn.Softmax(1)
@@ -168,7 +138,6 @@ class cnn(nn.Module):
         # x = F.softmax(x,dim=1)
 
         return x
-
 
 def to_one_hot(y, n_dims=None):
     ''' Take integer tensor y with n dims and convert it to 1-hot representation with n+1 dims. '''
@@ -205,14 +174,6 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         loss.backward()
         optimizer.step()
 
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
         # train_output = torch.max(output, 1)[1].cuda()
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
@@ -254,10 +215,9 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         # print(test_output.shape,'test_output.shape')
         accuracy = (torch.sum(test_output == test_y.long()).type(torch.FloatTensor) / test_y.size(0)).cuda()
         test_error.append((1 - accuracy.item()))
-        print('Epoch: ', epoch, '| test accuracy: %.8f' % accuracy)
+#         print('Epoch: ', epoch, '| test accuracy: %.8f' % accuracy)
         model.train()
     # np.save('./matplotlib_picture/UNIMIB_error/bp_test.npy', test_error)
-
 
 if __name__ == '__main__':
 
@@ -271,6 +231,3 @@ if __name__ == '__main__':
     test_error = []
     for epoch in range(400):
         train(train_loader, pathlist[2], pathlist[3],test_error)
-
-
-
