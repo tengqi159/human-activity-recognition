@@ -34,7 +34,6 @@ test_x_path='./oppotunity_sum/oppo_kun_norm_slidewindow8/data_test_one.npy'
 test_y_path_onehot='./oppotunity_sum/oppo_kun_norm_slidewindow8/label_test_onehot.npy'
 
 
-
 # # @torchsnooper.snoop()
 def data_flat(data_y):
     data_y=np.argmax(data_y, axis=1)
