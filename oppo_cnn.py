@@ -25,8 +25,9 @@ n_gpu = torch.cuda.device_count()
 print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
-##################kun_oppotunity_dataset_slide-windows with 8#########
+##################oppotunity_dataset_slide-windows with 8#########
 # shape (25343, 64, 107) (25343,17) (5313, 64, 107) (5313,17)
+
 train_x_path='./oppotunity_sum/oppo_kun_norm_slidewindow8/data_train_one.npy'
 train_y_path_onehot='./oppotunity_sum/oppo_kun_norm_slidewindow8/label_train_onehot.npy'
 test_x_path='./oppotunity_sum/oppo_kun_norm_slidewindow8/data_test_one.npy'
@@ -82,6 +83,7 @@ def quzheng_x(height,kernel_size,padding,stride,numlayer):
         height=feature
         list.append(feature)
     return list
+
 def quzheng_s(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -112,28 +114,16 @@ class conv_loss_block(nn.Module):
         self.decode_ys=[]
         self.bns_decode_ys = []
 
-        #####kun_slidewindows8_filter_128_num3
-        # decode_t_list=[3584,3584,3072,3072]
-        decode_t_list = [3584, 2048, 1152, 3072]
-        decode_t_list = [7040, 7424, 6144, 3072]
-        #####kun_slidewindows8_filter_64_num3
         decode_t_list=[6912,6912,5376,3072]
 
-        # decode_t_list = [3328, 3328, 2688, 2560]
-
-        # print(int(channel_out*height_width*0.5),'self.biasself.biasself.biasself.biasself.bias')
-        print(channel_in, channel_out, height_width, kernel, stride, bias,'channel_in, channel_out, height_width, kernel, stride, bias')
+        #print(channel_in, channel_out, height_width, kernel, stride, bias,'channel_in, channel_out, height_width, kernel, stride, bias')
 
         self.relu=nn.ReLU(inplace=True)
         self.encoder = nn.Sequential(
             nn.Conv2d(channel_in, channel_out, 3, stride=stride, padding=1, bias=self.bias),
             nn.BatchNorm2d(channel_out),
             nn.LeakyReLU(inplace=True),
-            # nn.MaxPool2d(kernel_size=(2, 1), stride=(1, 1), padding=(1, 0))
-
         )
-
-        # self.avg_pool = nn.MaxPool2d((2,1), padding=(1,0))
 
         for i in range(numlayer):
             print(quzheng_x(53, 2, 1, 2, numlayer)[i] * 128 * (i+1))
@@ -142,11 +132,6 @@ class conv_loss_block(nn.Module):
             self._set_init(decode_y)
             self.decode_ys.append(decode_y)
 
-
-
-        # self.decode_y = nn.Linear(4096, self.num_class)
-        # # print(channel_out * height_width,'channel_out * height_width')
-        # self.decode_y.weight.data.zero_()
 
         self.conv_loss = nn.Sequential(
             nn.Conv2d(channel_out, channel_out, kernel_size=(2,1), stride=(2,1), padding=(1,0), bias=False),
@@ -168,20 +153,12 @@ class conv_loss_block(nn.Module):
     def _set_init(self, layer):
         init.normal_(layer.weight, mean=0., std=.1)
         init.constant_(layer.bias, 0.2)
+        
     def clear_stats(self):
         self.loss_sim = 0.0
         self.loss_pred = 0.0
         self.correct = 0
         self.examples = 0
-
-    def print_stats(self):
-        stats = '{}, loss_sim={:.4f}, loss_pred={:.4f}, error={:.3f}%, num_examples={}\n'.format(
-            self.encoder,
-            self.loss_sim / self.examples,
-            self.loss_pred / self.examples,
-            100.0 * float(self.examples - self.correct) / self.examples,
-            self.examples)
-        return stats
 
     def set_learning_rate(self, lr):
         self.lr = lr
@@ -192,21 +169,15 @@ class conv_loss_block(nn.Module):
         self.optimizer.zero_grad()
 
     def optim_step(self):
-        # print('下一步优化网络')
         self.optimizer.step()
 
     def forward(self, x, y, y_onehot,loop,is_training):
-        # print(x.shape,'xxxxxxxxxxxx')
         h = self.encoder(x)
-        # print(h.shape,'h.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shape')
-
-
         h_return = h
         h_shape=h.shape
-        # print(h.shape,'h.shapeh.shapeh.shapeh.shapeh.shapeh.shape')
+        
         h_return = self.dropout(h_return)
 
-        #####先省略pooling#######
         h_loss = self.conv_loss(h)
         Rh = similarity_matrix(h_loss)
 
@@ -239,14 +210,15 @@ class conv_loss_block(nn.Module):
         loss = loss_sup*1+loss_unsup*0
 
         if is_training:
-            # print(self.training,'局部反向传播')
             loss.backward(retain_graph=False)
+            
         if is_training:
             self.optimizer.step()
             self.optimizer.zero_grad()
             h_return.detach_()
+            
         loss = loss.item()
-        # print('run')
+        
         return h_return, loss
 
 
@@ -264,19 +236,16 @@ class convnet(nn.Module):
             [conv_loss_block(self.input_ch, self.output_ch, self.height, kernel=(3,1), stride=(2,1), bias=False,numlayer=num_layers,lr=lr)])
         self.layers.extend(
             [conv_loss_block(output_ch*i, output_ch * (i + 1), self.height, kernel=(3,1), stride=(2,1), bias=False,numlayer=num_layers,lr=lr) for i in range(1, num_layers)])
-        # ####kun slidewindows8 numlayer:3 filter_64
-        # self.layer_out = nn.Linear(2688, num_classes)
 
-        ####kun slidewindows8 numlayer:3 filter_64
+        
         self.layer_out = nn.Linear(5376, num_classes)
-
         self.layer_out.weight.data.zero_()
-
 
 
         bn = nn.BatchNorm2d(64)
         setattr(self, 'pre_bn' , bn)
         self.bn.append(bn)
+        
     def parameters(self):
         return self.layer_out.parameters()
 
@@ -286,12 +255,10 @@ class convnet(nn.Module):
 
     def optim_step(self):
         for i, layer in enumerate(self.layers):
-            # print('下一步优化')
             layer.optim_step()
 
     def optim_zero_grad(self):
         for i, layer in enumerate(self.layers):
-            # print('初始化optim')
             layer.optim_zero_grad()
 
     def forward(self, x, y, y_onehot,is_training):
@@ -302,13 +269,10 @@ class convnet(nn.Module):
             if i==0:
                 x = x.type(torch.cuda.FloatTensor)
                 x=self.bn[i](x)
-            # print(x.shape, 'x.shape')
-            # print('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
+
 
             x, loss = layer(x, y, y_onehot,i,is_training)
-            # print('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
             total_loss += loss
-            # print(x.shape,'xrrrrrrrr',i)
 
         x= x.contiguous().view(x.size(0), -1)
         x = self.layer_out(x)
@@ -326,20 +290,18 @@ def to_one_hot(y, n_dims=None):
     return y_one_hot
 
 
-# input_ch,output_ch,height,num_layers,num_hiden,num_classes
-
 def train(train_loader,train_error,test_error):
     model.train()
 
     for m in model.modules():
         if isinstance(m,conv_loss_block):
             m.clear_stats()
+            
     total_num = sum(p.numel() for p in model.parameters())
     trainable_num = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    # for m in model.modules():
-    #     m.clear_stats()
 
     print('Total_Number of params: {} |Trainable_num of params: {}'.format(total_num, trainable_num))
+    
     for step, (batch_x, batch_y) in enumerate(train_loader):
         batch_x, batch_y = batch_x.cuda(), batch_y.cuda()
 
@@ -356,16 +318,15 @@ def train(train_loader,train_error,test_error):
         loss_global = l(output, batch_y.long())
         loss_t = loss_global *1 + loss_local * 0
         loss_t *= (1 - 0.99)
-        #
-
 
         loss_t.backward(retain_graph=False)
         optimizer.step()
-    train_output = torch.max(output, 1)[1].cuda()
-    taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
-    error = 1 - taccuracy.item()
-    train_error.append(error)
-    print('EPOCH', epoch, 'train accuracy', taccuracy.item())
+        
+#     train_output = torch.max(output, 1)[1].cuda()
+#     taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
+#     error = 1 - taccuracy.item()
+#     train_error.append(error)
+#     print('EPOCH', epoch, 'train accuracy', taccuracy.item())
 
     # np.save('./matplotlib_picture/OPPO_error/predsim_train_batchsize1000.npy', train_error)
     if epoch % 1 == 0:
@@ -407,6 +368,7 @@ def train(train_loader,train_error,test_error):
         print('Epoch: ', epoch, '| test accuracy: %.8f' % accuracy)
         test_error.append((1 - accuracy.item()))
     # np.save('./matplotlib_picture/OPPO_error/sim_test.npy',test_error)
+    
 if __name__ == '__main__':
     model = convnet(64, 128, 128 * 2,3, 100, 17,0.01)
     model.cuda()
@@ -422,79 +384,3 @@ if __name__ == '__main__':
     for epoch in range(300):
         train(train_loader,train_error,test_error)
 
-########### my_oppotunity ###############
-# (26415, 64, 107) (26415,) (14615, 64, 107) (14615,)
-# my window:64 slidewindow:22 with null
-# Epoch:  199 | test accuracy: 0.9711
-
-########## kun_oppotunity ################
-# shape (25343, 64, 107) (25343,17) (5313, 64, 107) (5313,17)
-#windows: 64 slidewindow:8 without null
-# Epoch:  44 | test accuracy: 0.82175795 | test F1: 0.81983933 | test recall: 0.82175795
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#####opportunity 标签处理##############
-# # path = str(os.path.dirname(os.path.abspath("__file__")))
-# # train_x = np.load( './testing_labels.npy')
-# # train_x = torch.from_numpy(np.reshape(train_x, [7734, 3, 151, 1])).cuda()
-# # train_x = np.load('./finnaldata/x_train_oppotunity.npy')
-# train_y = np.load('./finnaldata/y_test_oppotunity.npy')
-# # test_x = np.load('./finnaldata/x_test_oppotunity.npy')
-# # test_y = np.load('./finnaldata/y_test_oppotunity_onehot.npy')
-# # train_y  = torch.from_numpy(train_y .astype(np.float32)).cuda()
-# train_y_copy=train_y
-# train_y_copy[train_y_copy==0]=0
-# train_y_copy[train_y_copy==406516]=1
-# train_y_copy[train_y_copy==406517]=2
-# train_y_copy[train_y_copy==404516]=3
-# train_y_copy[train_y_copy==404517]=4
-# train_y_copy[train_y_copy==406520 ]=5
-# train_y_copy[train_y_copy==404520 ]=6
-# train_y_copy[train_y_copy==406505]=7
-# train_y_copy[train_y_copy==404505]=8
-# train_y_copy[train_y_copy==406519]=9
-# train_y_copy[train_y_copy==404519]=10
-# train_y_copy[train_y_copy==406511]=11
-# train_y_copy[train_y_copy==404511]=12
-# train_y_copy[train_y_copy==406508]=13
-# train_y_copy[train_y_copy==404508]=14
-# train_y_copy[train_y_copy==408512]=15
-# train_y_copy[train_y_copy==407521]=16
-# train_y_copy[train_y_copy==405506]=17
-#
-# def to_one_hot(y, n_dims=None):
-#     ''' Take integer tensor y with n dims and convert it to 1-hot representation with n+1 dims. '''
-#     y_tensor = y.type(torch.LongTensor).view(-1, 1)
-#     n_dims = n_dims if n_dims is not None else int(torch.max(y_tensor)) + 1
-#     y_one_hot = torch.zeros(y_tensor.size()[0], n_dims).scatter_(1, y_tensor, 1)
-#     y_one_hot = y_one_hot.view(*y.shape, -1)
-#     return y_one_hot
-# np.save('./finnaldata/y_test_oppotunity_onehot.npy',train_y_copy)
-# # tar=to_one_hot(train_y)
-# print(train_y.shape)
-# # print(test_y.shape)
-# # (211265, 107, 64) (211265,)
