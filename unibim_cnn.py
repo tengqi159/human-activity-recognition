@@ -87,6 +87,7 @@ def quzheng_x(height,kernel_size,padding,stride,numlayer):
         height=feature
         list.append(feature)
     return list
+
 def quzheng_s(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -115,9 +116,7 @@ class conv_loss_block(nn.Module):
         self.decode_ys=[]
         self.bns_decode_ys = []
 
-        #####kun_slidewindows8_filter_128_num3
-
-        decode_t_list = [28416, 18432, 8448]#三层
+        decode_t_list = [28416, 18432, 8448]
 
 
         self.relu=nn.ReLU(inplace=True)
@@ -172,21 +171,17 @@ class conv_loss_block(nn.Module):
         self.optimizer.zero_grad()
 
     def optim_step(self):
-        # print('下一步优化网络')
         self.optimizer.step()
 
     def forward(self, x, y, y_onehot,loop,is_training):
-        # print(x.shape,'xxxxxxxxxxxx')
         h = self.encoder(x)
-        # print(h.shape,'h.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shapeh.shape')
 
 
         h_return = h
         h_shape=h.shape
-        # print(h.shape,'h.shapeh.shapeh.shapeh.shapeh.shapeh.shape')
+
         h_return = self.dropout(h_return)
 
-        #####先省略pooling#######
         h_loss = self.conv_loss(h)
         Rh = similarity_matrix(h_loss)
 
@@ -201,14 +196,14 @@ class conv_loss_block(nn.Module):
         # print(h_pool.shape,'h_pool.view(h_pool.size(0)')
 
         y_hat_local = self.decode_ys[loop](h_pool.view(h_pool.size(0), -1))
-        # print(y_hat_local.shape, y.shape,y_onehot.shape,'y_hat_local.shape, y.detach().shape')
+
 
         loss_pred = (1 - 0.99) * F.cross_entropy(y_hat_local, y.detach().long())
 
         Ry = similarity_matrix(y_onehot).detach()
 
         loss_sim = 0.99 * F.mse_loss(Rh, Ry)
-        # print(loss_sim,'loss_simloss_simloss_simloss_simloss_simloss_simloss_simloss_sim')
+
         loss_sup = loss_pred+loss_sim
 
 
@@ -307,27 +302,15 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         target_onehot = target_onehot.cuda()
         # print(batch_x.shape,target_onehot.shape,batch_y.shape,'batch_x,target_onehot.shape,batch_y.shape')
 
-        # check_parameters(model,2)
         optimizer.zero_grad()
         output,_ = model(batch_x, batch_y, target_onehot,True)
         # print(output.shape,batch_y.shape,target_onehot.shape,'output.shape')
 
         loss = loss_func(output, batch_y.long())
 
-        # check_parameters(model, 2)
-
-        # loss_t.backward()
         loss.backward()
         optimizer.step()
 
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
         # train_output = torch.max(output, 1)[1].cuda()
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
@@ -350,13 +333,13 @@ def train(train_loader, test_x_path, test_y_path,test_error):
             test_output,_ = model(test_x, test_y, test_y_onehot, False)
 
             test_output_copy = test_output
-            print(test_output.shape)
+#             print(test_output.shape)
             test_output = data_flat(test_output.cpu().detach().numpy())
-            print(test_output.shape, 'test_output')
+#             print(test_output.shape, 'test_output')
 
             test_output_f1 = np.asarray(pd.get_dummies(test_output))
 
-            print(test_y_onehot.shape, test_output_f1.shape)
+#             print(test_y_onehot.shape, test_output_f1.shape)
             acc = accuracy_score(test_y_onehot.cpu().numpy(), test_output_f1)
             f1 = f1_score(test_y_onehot.cpu().numpy(), test_output_f1, average='weighted')
             f2 = f1_score(test_y_onehot.cpu().numpy(), test_output_f1, average='micro')
@@ -386,13 +369,13 @@ if __name__ == '__main__':
     print(model)
 
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=1.5e-3)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-3)
     loss_func = nn.CrossEntropyLoss().cuda()
     train_loader = load_data(pathlist[0], pathlist[1], batchsize=100)
     test_error = []
 
     lr = [0.003, 0.0015, 0.0009]
-    for epoch in range(500):
+    for epoch in range(400):
         if epoch<=30:
             lr_dynamic=lr[0]
             model.set_learning_rate(lr_dynamic)
