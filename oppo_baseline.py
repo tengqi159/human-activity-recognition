@@ -26,28 +26,13 @@ def data_flat(data_y):
 path = os.path.dirname(os.path.dirname(__file__))
 # print(path)
 
-# model name 'baseline_cnn' never use
-# model name 'baseline_cnn_local_UCI'  it is my method using UCI dataset.
-# model name 'DCNN_UCI' the model is baseline using UCI dataset.
-# model name 'CONVLSTM_UCI' the model is baseline using UCI dataset
-
-# model name 'baseline_cnn_local_oppo'
-# model name 'DCNN_oppo'
-# model name 'CONVLSTM_oppo' it is my method using oppoyunity dataset.
-
-# model name 'CONVLSTM_UNIMIB' the model is baseline using UCI dataset
 
 model='baseline_cnn_local_UCI'
-
-
 
 pathlist=['./oppotunity_sum/oppo_kun_norm_slidewindow8/data_train_one.npy',
                 './oppotunity_sum/oppo_kun_norm_slidewindow8/label_train_onehot.npy',
                 './oppotunity_sum/oppo_kun_norm_slidewindow8/data_test_one.npy',
                 './oppotunity_sum/oppo_kun_norm_slidewindow8/label_test_onehot.npy']
-
-
-
 
 def load_data(train_x_path, train_y_path, batchsize):
     train_x = np.load(train_x_path)
@@ -69,13 +54,9 @@ def load_data(train_x_path, train_y_path, batchsize):
         num_workers=0,
     )
     total = len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='Ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
-
-
-
-
 
 
 
@@ -91,6 +72,7 @@ def similarity_matrix(x):
     xn = xc / (1e-8 + torch.sqrt(torch.sum(xc ** 2, dim=1))).unsqueeze(1)
     R = xn.matmul(xn.transpose(1, 0)).clamp(-1, 1)
     return R
+
 def quzheng_x(height, kernel_size, padding, stride, numlayer):
     list = []
     for i in range(1, numlayer + 1):
@@ -114,6 +96,7 @@ def check_parameters(defined_model, parameters_index):
     (name, param) = params[parameters_index]
     print('___________________________________________________________________\n', name, param,
           '\n____________________________________________________________________')
+    
 class cnn(nn.Module):
     def __init__(self):
         super(cnn, self).__init__()
@@ -198,16 +181,13 @@ def train(epoch,train_loader, test_x_path, test_y_path,test_error,train_error):
         target_onehot = target_onehot.cuda()
         # print(batch_x.shape,target_onehot.shape,batch_y.shape,'batch_x,target_onehot.shape,batch_y.shape')
 
-        # check_parameters(model,2)
         optimizer.zero_grad()
         output = model(batch_x)
         # print(output.shape,batch_y.shape,target_onehot.shape,'output.shape')
 
         loss = loss_func(output, batch_y.long())
 
-        # check_parameters(model, 2)
 
-        # loss_t.backward()
         loss.backward()
         optimizer.step()
 
