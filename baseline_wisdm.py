@@ -31,9 +31,7 @@ pathlist = ['./oppotunity_sum/wisdm_new/X_train.npy',
             './oppotunity_sum/wisdm_new/X_test.npy',
             './oppotunity_sum/wisdm_new/y_test.npy']
 
-a=np.load(pathlist[0])
-b=np.load(pathlist[1])
-print(a.shape,b.shape)
+
 # # @torchsnooper.snoop()
 def data_flat(data_y):
     data_y=np.argmax(data_y, axis=1)
@@ -63,21 +61,6 @@ def load_data(path_X,path_y,batchsize):
     #     pass
     return loader
 
-def similarity_matrix(x):
-    ''' Calculate adjusted cosine similarity matrix of size x.size(0) x x.size(0). '''
-    if x.dim() == 4:
-        if x.size(1) > 3 and x.size(2) > 1:
-            z = x.view(x.size(0), x.size(1), -1)
-            x = z.std(dim=2)
-            # print('this similarity matrix x shape',x.shape)
-        else:
-            x = x.view(x.size(0), -1)
-    xc = x - x.mean(dim=1).unsqueeze(1)
-    xn = xc / (1e-8 + torch.sqrt(torch.sum(xc ** 2, dim=1))).unsqueeze(1)
-    R = xn.matmul(xn.transpose(1, 0)).clamp(-1, 1)
-    # print('this similarity matrix x shape\n', R.shape)
-    return R
-
 def quzheng_x(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -85,6 +68,7 @@ def quzheng_x(height,kernel_size,padding,stride,numlayer):
         height=feature
         list.append(feature)
     return list
+
 def quzheng_s(height,kernel_size,padding,stride,numlayer):
     list=[]
     for i in range(1,numlayer+1):
@@ -93,14 +77,6 @@ def quzheng_s(height,kernel_size,padding,stride,numlayer):
         list.append(feature)
     return list
 
-class Loss(nn.Module):
-    def __init__(self):
-        super(Loss, self).__init__()
-        print('this is loss function!')
-
-    def forward(self, output, label):
-        loss_func = F.cross_entropy(output, label)
-        return loss_func
 class cnn(nn.Module):
     def __init__(self):
         super(cnn, self).__init__()
@@ -184,31 +160,19 @@ def train(train_loader, test_x_path, test_y_path,test_error,opti):
         batch_x, batch_y = batch_x.cuda(), batch_y.cuda()
         target_onehot = to_one_hot(batch_y)
         target_onehot = target_onehot.cuda()
+
         # print(batch_x.shape,target_onehot.shape,batch_y.shape,'batch_x,target_onehot.shape,batch_y.shape')
         opti.zero_grad()
-        # check_parameters(model,2)
 
         output= model(batch_x)
         # print(output.shape,batch_y.shape,target_onehot.shape,'output.shape')
 
         loss = loss_func(output, batch_y.long())
 
-        # check_parameters(model, 2)
 
-        # loss_t.backward()
         loss.backward()
         opti.step()
 
-
-
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
         # train_output = torch.max(output, 1)[1].cuda()
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
