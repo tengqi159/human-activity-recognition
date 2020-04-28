@@ -28,10 +28,10 @@ path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
 # @torchsnooper.snoop()
 
-pathlist = [r'./oppotunity_sum/pamap_new/train_X_new.npy',
-            r'./oppotunity_sum/pamap_new/train_y_new.npy',
-            r'./oppotunity_sum/pamap_new/total_pamap2_valtestx.npy',
-            r'./oppotunity_sum/pamap_new/total_pamap2_valtesty.npy']
+pathlist = [r'./train_X_new.npy',
+            r'./train_y_new.npy',
+            r'./test_X.npy',
+            r'./test_Y.npy']
 
 
 # # @torchsnooper.snoop()
@@ -69,22 +69,10 @@ def load_data(path_X,path_y,batchsize):
         num_workers=0,
     )
     total=len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
 
-def similarity_matrix(x):
-    ''' Calculate adjusted cosine similarity matrix of size x.size(0) x x.size(0). '''
-    if x.dim() == 4:
-        if x.size(1) > 3 and x.size(2) > 1:
-            z = x.view(x.size(0), x.size(1), -1)
-            x = z.std(dim=2)
-        else:
-            x = x.view(x.size(0), -1)
-    xc = x - x.mean(dim=1).unsqueeze(1)
-    xn = xc / (1e-8 + torch.sqrt(torch.sum(xc ** 2, dim=1))).unsqueeze(1)
-    R = xn.matmul(xn.transpose(1, 0)).clamp(-1, 1)
-    return R
 
 def quzheng_x(height,kernel_size,padding,stride,numlayer):
     list=[]
@@ -305,7 +293,7 @@ def to_one_hot(y, n_dims=None):
 def plot_confusion(comfusion,class_data):
     plt.figure(figsize=(12,9))
     classes = class_data
-    plt.imshow(comfusion, interpolation='nearest', cmap=plt.cm.Oranges)  # 按照像素显示出矩阵
+    plt.imshow(comfusion, interpolation='nearest', cmap=plt.cm.Oranges) 
     plt.title('confusion_matrix', fontsize=12)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
@@ -321,7 +309,7 @@ def plot_confusion(comfusion,class_data):
 
     iters = np.reshape([[[i, j] for j in range(len(classes))] for i in range(len(classes))], (comfusion.size, 2))
     for i, j in iters:
-        plt.text(j, i, format(comfusion[i, j]))  # 显示对应的数字
+        plt.text(j, i, format(comfusion[i, j]))  
 
     plt.ylabel('Real label',fontsize = 12)
     plt.xlabel('Prediction',fontsize = 12)
@@ -356,15 +344,7 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         loss.backward()
         optimizer.step()
 
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
-        # train_output = torch.max(output, 1)[1].cuda()
+            
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
     if epoch % 1 == 0:
