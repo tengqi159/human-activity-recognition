@@ -30,10 +30,10 @@ path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
 
 
-pathlist = [r'./oppotunity_sum/pamap_new/train_X_new.npy',
-            r'./oppotunity_sum/pamap_new/train_y_new.npy',
-            r'./oppotunity_sum/pamap_new/total_pamap2_valtestx.npy',
-            r'./oppotunity_sum/pamap_new/total_pamap2_valtesty.npy']
+pathlist = [r'./pamap2/train_X_new.npy',
+            r'./pamap2/train_y_new.npy',
+            r'./pamap2/testx.npy',
+            r'./pamap2/testy.npy']
 
 
 train_x=np.load(pathlist[0])
