@@ -309,21 +309,9 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         # print(output.shape,batch_y.shape,target_onehot.shape,'output.shape')
 
         loss = l(output, batch_y.long())
-
-        # check_parameters(model, 2)
-
-        # loss_t.backward()
         loss.backward()
         optimizer.step()
 
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
         # train_output = torch.max(output, 1)[1].cuda()
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
