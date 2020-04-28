@@ -21,6 +21,7 @@ from bisect import bisect_right
 import torch.utils.data as Data
 from tqdm import tqdm
 import os
+
 torch.cuda.set_device(0)
 n_gpu = torch.cuda.device_count()
 print(n_gpu)
