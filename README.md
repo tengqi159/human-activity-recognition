@@ -12,8 +12,11 @@ Welcome to cite our paper！(https://ieeexplore.ieee.org/abstract/document/90268
 # Requirements
 
 ● Python3
+
 ● PyTorch (Recommended version 1.2.0+cu92)
+
 ● Scikit-learn
+
 ● Numpy
 
 # Abstract:
