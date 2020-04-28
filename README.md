@@ -9,6 +9,16 @@ the OPPOTUNITY and PAMAP2 dataset are to large to upload, and the remaining thre
 
 Welcome to cite our paper！(https://ieeexplore.ieee.org/abstract/document/9026890/)
 
+Please cite our paper in your publications if it helps your research.
+
+@article{teng2020layer,
+  title={The layer-wise training convolutional neural networks using local loss for sensor based human activity recognition},
+  author={Teng, Qi and Wang, Kun and Zhang, Lei and He, Jun},
+  journal={IEEE Sensors Journal},
+  year={2020},
+  publisher={IEEE}
+}
+
 # Requirements
 
 ● Python3
