@@ -28,10 +28,10 @@ print(path)
 ##################oppotunity_dataset_slide-windows with 8#########
 # shape (25343, 64, 107) (25343,17) (5313, 64, 107) (5313,17)
 
-train_x_path='./oppotunity_sum/oppo_kun_norm_slidewindow8/data_train_one.npy'
-train_y_path_onehot='./oppotunity_sum/oppo_kun_norm_slidewindow8/label_train_onehot.npy'
-test_x_path='./oppotunity_sum/oppo_kun_norm_slidewindow8/data_test_one.npy'
-test_y_path_onehot='./oppotunity_sum/oppo_kun_norm_slidewindow8/label_test_onehot.npy'
+train_x_path='./data_train_one.npy'
+train_y_path_onehot='./label_train_onehot.npy'
+test_x_path='./data_test_one.npy'
+test_y_path_onehot='./label_test_onehot.npy'
 
 
 # # @torchsnooper.snoop()
@@ -56,7 +56,7 @@ def load_data():
         num_workers=0,
     )
     total=len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
 
@@ -146,7 +146,6 @@ class conv_loss_block(nn.Module):
         self.nonlin = nn.ReLU(inplace=True)
         self.dropout = torch.nn.Dropout(p=self.dropout_p, inplace=False)
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
-
 
         self.clear_stats()
     def _set_init(self, layer):
