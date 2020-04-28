@@ -29,10 +29,10 @@ path = os.path.dirname(os.path.dirname(__file__))
 
 model='baseline_cnn_local_UCI'
 
-pathlist=['./UCI/data_train_one.npy',
-                './UCI/label_train_onehot.npy',
-                './UCI/data_test_one.npy',
-                './UCI/label_test_onehot.npy']
+pathlist=['./oppo/data_train_one.npy',
+                './oppo/label_train_onehot.npy',
+                './oppo/data_test_one.npy',
+                './oppo/label_test_onehot.npy']
 
 def load_data(train_x_path, train_y_path, batchsize):
     train_x = np.load(train_x_path)
