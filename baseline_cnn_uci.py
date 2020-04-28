@@ -27,10 +27,10 @@ n_gpu = torch.cuda.device_count()
 print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
-pathlist = ['./oppotunity_sum/UCI/x_train.npy',
-            './oppotunity_sum/UCI/y_train.npy',
-            './oppotunity_sum/UCI/x_test.npy',
-            './oppotunity_sum/UCI/y_test.npy']
+pathlist = ['./UCI/x_train.npy',
+            './UCI/y_train.npy',
+            './UCI/x_test.npy',
+            './UCI/y_test.npy']
 
 
 GLOBAL_SEED = 1
@@ -83,7 +83,7 @@ def load_data(train_x_path, train_y_path, batchsize):
         worker_init_fn=worker_init_fn
     )
     total = len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
 
