@@ -341,6 +341,7 @@ def train(train_loader,train_error,test_error):
         test_y_onehot = to_one_hot(test_y)
         test_y_onehot = test_y_onehot.cuda()
 
+        
         print(test_x.shape, test_y.shape, test_y_onehot.shape, 'test_x.shape,test_y.shape,target_y.shape')
         try:
             test_output, _ = model(test_x, test_y, test_y_onehot, False)
