@@ -9,7 +9,8 @@ the OPPOTUNITY and PAMAP2 dataset are to large to upload, and the remaining thre
 
 Welcome to cite our paper！(https://ieeexplore.ieee.org/abstract/document/9026890/)
 
-#Requirements
+# Requirements
+
 ● Python3
 ● PyTorch (Recommended version 1.2.0+cu92)
 ● Scikit-learn
