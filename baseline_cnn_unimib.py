@@ -26,10 +26,10 @@ n_gpu = torch.cuda.device_count()
 print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
-pathlist = ['./oppotunity_sum/unimib/training_data.npy',
-            './oppotunity_sum/unimib/training_labels.npy',
-            './oppotunity_sum/unimib/testing_data.npy',
-            './oppotunity_sum/unimib/testing_labels.npy']
+pathlist = ['./unimib/training_data.npy',
+            './unimib/training_labels.npy',
+            './unimib/testing_data.npy',
+            './unimib/testing_labels.npy']
 
 
 # this is UCIdataset. torch.Size([7734, 151, 3]) torch.Size([7734]) windows size:151 channel:3 calss:17 
@@ -64,7 +64,7 @@ def load_data(train_x_path, train_y_path, batchsize):
         num_workers=0,
     )
     total = len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
 
