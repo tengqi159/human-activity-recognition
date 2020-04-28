@@ -25,10 +25,10 @@ print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
 # @torchsnooper.snoop()
-pathlist = ['./oppotunity_sum/wisdm_new/X_train.npy',
-            './oppotunity_sum/wisdm_new/y_train.npy',
-            './oppotunity_sum/wisdm_new/X_test.npy',
-            './oppotunity_sum/wisdm_new/y_test.npy']
+pathlist = ['./wisdm_new/X_train.npy',
+            './wisdm_new/y_train.npy',
+            './wisdm_new/X_test.npy',
+            './wisdm_new/y_test.npy']
 
 a=np.load(pathlist[0])
 b=np.load(pathlist[1])
@@ -375,7 +375,8 @@ if __name__ == '__main__':
     test_error = []
     model.set_learning_rate(0.001)
     train_loader = load_data(pathlist[0], pathlist[1], batchsize=200)
-    lr = [0.004, 0.001, 0.0009, 0.0008, 0.0007, 0.0005]
+    lr = [0.004, 0.001, 0.0009, 0.0008, 0.0007, 0.0005]\
+
     for epoch in range(500):
         if epoch <= 50:
             lr_dynamic = lr[0]
