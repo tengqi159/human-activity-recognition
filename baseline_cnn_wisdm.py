@@ -26,10 +26,10 @@ n_gpu = torch.cuda.device_count()
 print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
-pathlist = ['./oppotunity_sum/wisdm_new/X_train.npy',
-            './oppotunity_sum/wisdm_new/y_train.npy',
-            './oppotunity_sum/wisdm_new/X_test.npy',
-            './oppotunity_sum/wisdm_new/y_test.npy']
+pathlist = ['./wisdm_new/X_train.npy',
+            './wisdm_new/y_train.npy',
+            './wisdm_new/X_test.npy',
+            './wisdm_new/y_test.npy']
 
 
 # # @torchsnooper.snoop()
@@ -57,7 +57,7 @@ def load_data(path_X,path_y,batchsize):
         num_workers=0,
     )
     total=len(loader)
-    # for _ in tqdm(range(total), desc='进行中', ncols=80,postfix="train_data"):
+    # for _ in tqdm(range(total), desc='ongoing', ncols=80,postfix="train_data"):
     #     pass
     return loader
 
