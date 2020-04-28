@@ -25,10 +25,10 @@ n_gpu = torch.cuda.device_count()
 print(n_gpu)
 path=os.path.dirname(os.path.abspath("__file__"))
 print(path)
-pathlist = ['./oppotunity_sum/unimib/training_data.npy',
-            './oppotunity_sum/unimib/training_labels.npy',
-            './oppotunity_sum/unimib/testing_data.npy',
-            './oppotunity_sum/unimib/testing_labels.npy']
+pathlist = ['./unimib/training_data.npy',
+            './unimib/training_labels.npy',
+            './unimib/testing_data.npy',
+            './unimib/testing_labels.npy']
 
 
 # # @torchsnooper.snoop()
@@ -172,7 +172,6 @@ class conv_loss_block(nn.Module):
         self.optimizer.zero_grad()
 
     def optim_step(self):
-        # print('下一步优化网络')
         self.optimizer.step()
 
     def forward(self, x, y, y_onehot,loop,is_training):
@@ -186,7 +185,6 @@ class conv_loss_block(nn.Module):
         # print(h.shape,'h.shapeh.shapeh.shapeh.shapeh.shapeh.shape')
         h_return = self.dropout(h_return)
 
-        #####先省略pooling#######
         h_loss = self.conv_loss(h)
         Rh = similarity_matrix(h_loss)
 
@@ -320,14 +318,7 @@ def train(train_loader, test_x_path, test_y_path,test_error):
         loss.backward()
         optimizer.step()
 
-            # if epoch%10==0:
-            # print('局部更新')
-            # check_parameters(model, 2)
-        # check_parameters(model, 16)
-        # params = list(model.named_parameters())
-        # (name, param) = params[11]
-        # print('___________________________________________________________________\n', name, param,
-        #       '\n____________________________________________________________________')
+           
         # train_output = torch.max(output, 1)[1].cuda()
         # taccuracy = (torch.sum(train_output == batch_y.long()).type(torch.FloatTensor) / batch_y.size(0)).cuda()
         # print(taccuracy,'train_accuracy')
