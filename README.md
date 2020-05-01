@@ -43,7 +43,7 @@ Recently, deep learning, which are able to extract automatically features from d
 In this work, we performed experiments on several publicHAR datasets including UCI HAR dataset, OPPOTUNITY
 dataset, UniMib-SHAR dataset, PAMAP2 dataset, and WISDM dataset.
 
-**- [1] UCI HAR dataset:**
+**- [ ] UCI HAR dataset:**
 In the experiment, our model was trained by using local loss, and the baseline was trained by using global loss. It can be seen from Fig.2 that pred loss when trained does not surpass the baseline. Sim loss can achieve test error close to that of the baseline. In particular, both of its combination, predsim loss, can consistently outperforms the baseline on the dataset. On the other hand, presim loss is able to make model converge faster at the same learning rate. Table.I demonstrates the performance of our model compared with state-of-the-arts in this experiment. 
 
 |       model       |  par  |  accuracy  |     F1     |
