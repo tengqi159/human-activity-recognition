@@ -40,9 +40,15 @@ Recently, deep learning, which are able to extract automatically features from d
 
 
 # Contributing
-|model| par | accuracy | F1 |
-
-|Baseline| 1.29M | 0.9620 | 0.9619 |
+|       model       |  par  |  accuracy  |     F1     |
+| :---------------: | :---: | :--------: | :--------: |
+|     Baseline      | 1.29M |   0.9620   |   0.9619   |
+|       pred        |       |   0.9542   |   0.9541   |
+|        sim        | 0.35M |   0.9616   |   0.9615   |
+|    **predsim**    |       |   0.9698   |   0.9697   |
+| Jiang et al.[10]  |   -   |   0.9518   |     -      |
+| Ignatovet al.[30] |   -   | **0.9763** | **0.9762** |
+| Ronao et al.[29]  |   -   |   0.9575   |     -      |
 
 Contributions to this repository are welcome. Examples of things you can contribute:
 
