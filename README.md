@@ -50,6 +50,7 @@ Recently, deep learning, which are able to extract automatically features from d
 | Ignatovet al.[30] |   -   | **0.9763** | **0.9762** |
 | Ronao et al.[29]  |   -   |   0.9575   |     -      |
 
+![Fig2](C:\Users\27925\Desktop\图片\table1.png)
 Contributions to this repository are welcome. Examples of things you can contribute:
 
 
