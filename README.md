@@ -51,7 +51,6 @@ In the experiment, our model was trained by using local loss, and the baseline w
 |       pred        |       |   0.9542   |   0.9541   |
 |        sim        | 0.35M |   0.9616   |   0.9615   |
 |    **predsim**    |       |   0.9698   |   0.9697   |
-
 | Jiang et al.[10]  |   -   |   0.9518   |     -      |
 | Ignatovet al.[30] |   -   | **0.9763** | **0.9762** |
 | Ronao et al.[29]  |   -   |   0.9575   |     -      |
