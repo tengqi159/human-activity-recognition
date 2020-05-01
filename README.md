@@ -57,6 +57,14 @@ In the experiment, our model was trained by using local loss, and the baseline w
 | Ronao et al.[29]  |   -   |   0.9575   |     -      |
 
 ![Fig2](https://github.com/tengqi159/human-activity-recognition/blob/master/picture/Fig1.jpg)
+------
+**(2) OPPOTUNITY dataset:**
+In the case of the OPPORTUNITY dataset, we evaluatue performance including the Null class, which may lead to an overestimation of the performance given its large prevalence. Fig.3 demonstrates the performance of our model
+compared with other loss functions in this experiment. It can
+be seen that predsim loss, yielding an improvement of 4.1% on
+baseline, worked better than the other loss for the tested CNN
+architecture. Our method is also compared with other stateof-
+the-arts in Table.III.
 Contributions to this repository are welcome. Examples of things you can contribute:
 
 
