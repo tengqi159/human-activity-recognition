@@ -41,7 +41,9 @@ Recently, deep learning, which are able to extract automatically features from d
 
 # Contributing
 |model| par | accuracy | F1 |
+
 |Baseline| 1.29M | 0.9620 | 0.9619 |
+
 Contributions to this repository are welcome. Examples of things you can contribute:
 
 
