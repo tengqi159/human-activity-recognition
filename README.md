@@ -55,7 +55,7 @@ In the experiment, our model was trained by using local loss, and the baseline w
 | Jiang et al.[10]  |   -   |   0.9518   |     -      |
 | Ignatovet al.[30] |   -   | **0.9763** | **0.9762** |
 | Ronao et al.[29]  |   -   |   0.9575   |     -      |
-
+​								ACCURACY AND F1 SCORE PERFORMANCE ON UCI DATASET.
 ![Fig2](https://github.com/tengqi159/human-activity-recognition/blob/master/picture/Fig1.jpg)
 ------
 **(2) OPPOTUNITY dataset:**
