@@ -39,7 +39,7 @@ Please cite our paper in your publications if it helps your research.
 Recently, deep learning, which are able to extract automatically features from data, has achieved state-of-the-art performance across a variety of sensor based human activity recognition (HAR) tasks. However, the existing deep neural networks are usually trained with a global loss, and all hidden layer weights have to be always kept in memory before the forward and backward pass has completed. The backward locking phenomenon prevents the reuse of memory, which is a crucial limitation for wearable activity recognition. In the paper, we proposed a layer-wise convolutional neural networks (CNN) with local loss for the use of HAR task. To our knowledge, this paper is the first that uses local loss based CNN for HAR in ubiquitous and wearable computing arena. We performed experiments on five public HAR datasets including UCI HAR dataset, OPPOTUNITY dataset, UniMib-SHAR dataset, PAMAP dataset, and WISDM dataset. The results show that local loss works better than global loss for tested baseline architectures. At no extra cost, the local loss can approach the state-of-the-arts on a variety of HAR datasets, even though the number of parameters was smaller. We believe that the layer-wise CNN with local loss can be used to update the existing deep HAR methods.
 
 
-#Contributing
+# Contributing
 |model| par | accuracy | F1 |
 |Baseline| 1.29M | 0.9620 | 0.9619 |
 Contributions to this repository are welcome. Examples of things you can contribute:
